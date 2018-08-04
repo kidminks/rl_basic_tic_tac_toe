@@ -1,6 +1,19 @@
+from __future__ import print_function
 import copy
 import pickle
 import random
+
+def print_board(current):
+	c = 1
+	for j in range(3):
+		for i in range(3):
+			if current[c-1]=='.':
+				print(c,end=' ')
+			else:
+				print(current[c-1],end=' ')
+			c += 1
+		print('')
+	print('')
 
 class States:
 	table = {}
@@ -39,7 +52,7 @@ class States:
 	def create_states(self, current, val, chance):
 		result = self.get_prob(current,chance)
 		self.table["".join(current)] = result
-		print current
+		# print(current)
 		if result==0.5:
 			temp = copy.deepcopy( current )
 			for i,v in enumerate(current):
@@ -51,7 +64,7 @@ class States:
 					else:
 						t_val = 'O'
 						t_chance = 0
-					print temp
+					# print(temp)
 					self.create_states(temp, t_val, t_chance)
 				temp = copy.deepcopy( current )
 	
@@ -75,7 +88,6 @@ class States:
 		if( random.randint(1,11)<4 and new_value != 1):
 			for key,value in next_states.iteritems():
 				if random.randint(1,3)%2==0:
-					print "random picking"
 					new_value = value
 					new_key = key
 					break
@@ -99,47 +111,32 @@ class States:
 		return True
 
 states = States()
-current = ['.','.','.','.','X','.','.','.','.']
+current = ['.','.','.','.','.','.','.','.','.']
 # states.create_states(current, 'X', 1)
 # states.store_table()
 states.retrive_table()
-# print states.table["".join(['X','.','.','.','.','.','.','.','.'])]
-# print states.table["".join(['.','X','.','.','.','.','.','.','.'])]
-# print states.table["".join(['.','.','X','.','.','.','.','.','.'])]
-# print states.table["".join(['.','.','.','X','.','.','.','.','.'])]
-# print states.table["".join(['.','.','.','.','X','.','.','.','.'])]
-# print states.table["".join(['.','.','.','.','.','X','.','.','.'])]
-# print states.table["".join(['.','.','.','.','.','.','X','.','.'])]
-# print states.table["".join(['.','.','.','.','.','.','.','X','.'])]
-# print states.table["".join(['.','.','.','.','.','.','.','.','X'])]
-for key,val in states.table.iteritems():
-	if val<0.5 and val!=0.0:
-		print key,val
-print ""
-for key,val in states.table.iteritems():
-	if val>0.5 and val!=1.0:
-		print key,val
 
 while(True):	
 	game_board = copy.deepcopy(current)
-	print game_board
+	game_board[random.randint(1,9)-1] = 'X'
+	print_board( game_board )
 	t = 1
 	while(True):
 		if t!=1:
 			game_board = states.next_move_predictor(game_board)
-			print game_board
+			print_board( game_board )
 			if( states.check_win(game_board) ):
-				print "Comp Won"
+				print("Comp Won")
 				break
 			if( states.draw_game(game_board) ):
-				print "Draw"
+				print("Draw")
 				break
 		t = 10
 		idx = input()
-		game_board[idx] = 'O'
+		game_board[idx-1] = 'O'
 		if( states.check_win(game_board) ):
-			print game_board
+			print_board( game_board )
 			states.lost(game_board, idx)
-			print "You Won"
+			print("You Won")
 			break
 	states.store_table()
