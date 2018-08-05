@@ -17,7 +17,7 @@ def print_board(current):
 
 class States:
 	table = {}
-	alpha = 0.2
+	alpha = 0.8
 
 	def __init__(self):
 		return
@@ -52,7 +52,7 @@ class States:
 	def create_states(self, current, val, chance):
 		result = self.get_prob(current,chance)
 		self.table["".join(current)] = result
-		# print(current)
+		print(current)
 		if result==0.5:
 			temp = copy.deepcopy( current )
 			for i,v in enumerate(current):
@@ -111,14 +111,14 @@ class States:
 		return True
 
 states = States()
-current = ['.','.','.','.','.','.','.','.','.']
+current = ['.','.','.','.','X','.','.','.','.']
 # states.create_states(current, 'X', 1)
 # states.store_table()
 states.retrive_table()
 
 while(True):	
 	game_board = copy.deepcopy(current)
-	game_board[random.randint(1,9)-1] = 'X'
+	# game_board[random.randint(1,9)-1] = 'X'
 	print_board( game_board )
 	t = 1
 	while(True):
